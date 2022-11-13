@@ -72,6 +72,20 @@ const UserController = {
             res.status(500).send({ message: `There was a problem getting the user with id ${req.params._id}`, error})
         }
     },
+    async getUserByUsername(req, res) {
+        try {
+            const user = await User.findOne({ 
+                username: req.params.username
+             });
+            if(!user) {
+                return res.send({message: `No user with username ${req.params.username}`});
+            };
+            res.send({message: `User with username ${req.params.username}`, user});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem getting the user with username ${req.params.username}`, error})
+        }
+    },
     async getAllUsers(req, res) {
         try {
             const users = await User.find();

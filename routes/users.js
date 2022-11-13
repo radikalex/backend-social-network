@@ -9,6 +9,7 @@ const { check } = require("express-validator");
 router.get('/', UserController.getAllUsers);
 router.get('/getLoggedUser', authentication, UserController.getLoggeduser);
 router.get('/id/:_id', UserController.getUserById);
+router.get('/getUserByUsername/:username', UserController.getUserByUsername);
 
 router.post('/', [
     check("username", "The userame cant be empty").notEmpty(),
