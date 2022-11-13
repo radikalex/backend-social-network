@@ -20,11 +20,11 @@ const UserController = {
                 email: req.body.email,
             });
             if (!user) {
-                return res.status(400).send("Username or password incorrect");
+                return res.status(400).send("Email or password incorrect");
             }
             const isMatch = bcrypt.compare(req.body.password, user.password);
             if (!isMatch) {
-                return res.status(400).send("Username or password incorrect");
+                return res.status(400).send("Email or password incorrect");
             }
             const token = jwt.sign({ _id: user._id }, jwt_secret);
             if (user.tokens.length > 4) 
@@ -34,10 +34,10 @@ const UserController = {
             res.send({ message: "Welcome " + user.username, token });
         } catch (error) {
           console.error(error);
-          res.status(500).send({msg: "There was an error during login", error});
+          res.status(500).send({message: "There was an error during login", error});
         }
       },
-      async logout(req, res) {
+    async logout(req, res) {
         try {
             await User.findByIdAndUpdate(req.user._id, {
                 $pull: { tokens: req.headers.authorization },
@@ -51,6 +51,27 @@ const UserController = {
             });
         }
       },
+      async getLoggeduser(req, res) {
+        try {
+            const user = await User.findById(req.user._id);
+            res.send(user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "There was a problem getting the logged user", error})
+        }
+      },
+      async getUserById(req, res) {
+        try {
+            const user = await User.findById(req.params._id);
+            if(!user) {
+                return res.send({message: `No user with id ${req.params._id}`});
+            };
+            res.send({message: `User with id ${req.params._id}`, user});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem getting the user with id ${req.params._id}`, error})
+        }
+      }
 }
 
 module.exports = UserController;
