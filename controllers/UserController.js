@@ -51,7 +51,7 @@ const UserController = {
             });
         }
       },
-      async getLoggeduser(req, res) {
+    async getLoggeduser(req, res) {
         try {
             const user = await User.findById(req.user._id);
             res.send(user);
@@ -59,8 +59,8 @@ const UserController = {
             console.error(error);
             res.status(500).send({ message: "There was a problem getting the logged user", error})
         }
-      },
-      async getUserById(req, res) {
+    },
+    async getUserById(req, res) {
         try {
             const user = await User.findById(req.params._id);
             if(!user) {
@@ -71,7 +71,63 @@ const UserController = {
             console.error(error);
             res.status(500).send({ message: `There was a problem getting the user with id ${req.params._id}`, error})
         }
-      }
+    },
+    async getAllUsers(req, res) {
+        try {
+            const users = await User.find();
+            res.send({message: `All users`, users});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem getting all users`, error})
+        }
+    },
+    async follow(req, res) {
+        try {
+            if(req.params._id === req.user._id) {
+                return res.status(400).send({message: "Users cannot follow themselves"});
+            }
+            const followed_user = await User.findById(req.params._id);
+            if(!followed_user) {
+                return res.status(404).send({message: `No user with id ${req.params._id}`});
+            }
+            if(followed_user.followers.includes(req.user._id)) {
+                return res.status(400).send({message: "You already follow this user"});
+            }
+            followed_user.followers.push(req.user._id);
+            followed_user.save();
+            const following_user = await User.findById(req.user._id);
+            following_user.following.push(followed_user._id)
+            following_user.save();
+            res.send({ message: "Follow successful"})
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem following the user`, error})
+        }
+    },
+    async unfollow(req, res) {
+        try {
+            if(req.params._id === req.user._id) {
+                return res.status(400).send({message: "Users cannot unfollow themselves"});
+            }
+            const following_user = await User.findById(req.params._id);
+            if(!following_user) {
+                return res.status(404).send({message: `No user with id ${req.params._id}`});
+            }
+            if(!following_user.followers.includes(req.user._id)) {
+                return res.status(400).send({message: "You dont follow this user"});
+            }
+            await User.findByIdAndUpdate(following_user._id, {
+                $pull: { followers: req.user._id }
+            });
+            await User.findByIdAndUpdate(req.user._id, {
+                $pull: { following: following_user._id }
+            });
+            res.send({ message: "Unfollow successful"})
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem unfollowing the user`, error})
+        }
+    }
 }
 
 module.exports = UserController;

@@ -6,6 +6,7 @@ const validateBodyParams = require("../middlewares/validateBodyParams");
 const { check } = require("express-validator");
 
 
+router.get('/', UserController.getAllUsers);
 router.get('/getLoggedUser', authentication, UserController.getLoggeduser);
 router.get('/id/:_id', UserController.getUserById);
 
@@ -17,5 +18,7 @@ router.post('/', [
 ], UserController.createUser);
 router.post('/login', UserController.login);
 router.post('/logout', authentication, UserController.logout);
+router.post('/follow/:_id', authentication, UserController.follow);
+router.post('/unfollow/:_id', authentication, UserController.unfollow);
 
 module.exports = router;
