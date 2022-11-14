@@ -56,6 +56,36 @@ const PostController = {
             res.status(500).send({ message: `There was a problem getting posts with title ${req.params.title}`, error })
         }
     },
+    async giveLike(req, res) {
+        try {
+            const post = await Post.findById(req.params._id);
+            if(post.likes.includes(req.user._id)) {
+                return res.status(400).send({ message: "You already have a like to this post, you can't give it another one" });
+            }
+            post.likes.push(req.user._id);
+            post.save();
+            res.send({ message: ` 'Like a post' successfully done` })
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem giving a like to a post`, error })
+        }
+    },
+    async removeLike(req, res) {
+        try {
+            const post = await Post.findById(req.params._id);
+            console.log(post._id)
+            if(!post.likes.includes(req.user._id)) {
+                return res.status(400).send({ message: "This post does not have your like" });
+            }
+            await Post.findByIdAndUpdate(req.params._id, {
+                $pull: { likes: req.user._id }
+            });
+            res.send({ message: ` 'Remove a like from a post' successfully done`})  
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem removing a like from post`, error })
+        }
+    }
 }
 
 module.exports = PostController;
