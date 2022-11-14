@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const PostController = {
     async getPosts (req, res) {
@@ -16,6 +17,7 @@ const PostController = {
     async createPost(req, res) {
         try {
             const post = await Post.create({ ...req.body, userId: req.user._id})
+            await User.findByIdAndUpdate(req.user._id, { $push: {postIds: post._id}})
             res.status(201).send({message: "Post created", post})
         } catch (error) {
             console.error(error)

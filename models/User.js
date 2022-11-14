@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
             ref: 'User'
         }
     ],
-    tokens: []
+    tokens: [],
+    postIds: [{ type: ObjectId, ref: 'Post' }]
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function() {

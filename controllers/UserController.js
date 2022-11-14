@@ -53,8 +53,10 @@ const UserController = {
       },
     async getLoggeduser(req, res) {
         try {
-            const user = await User.findById(req.user._id);
-            res.send(user);
+            const user = await User.findById(req.user._id)
+                .populate('postIds')
+                .populate('followers', ['username']);
+            res.send({...user.toJSON(), num_followers: user.followers.length });
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: "There was a problem getting the logged user", error})
