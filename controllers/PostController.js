@@ -1,6 +1,18 @@
 const Post = require("../models/Post");
 
 const PostController = {
+    async getPosts (req, res) {
+        try {
+            const { page = 1, limit = 10 } = req.query;
+            const posts = await Post.find()
+                .limit(limit)
+                .skip( (page - 1) * limit );
+            res.send({ message: "Posts obtained", posts})    
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'There was a problem getting users', error })
+        }
+    },
     async createPost(req, res) {
         try {
             const post = await Post.create({ ...req.body, userId: req.user._id})
