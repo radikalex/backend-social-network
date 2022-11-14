@@ -19,7 +19,8 @@ router.post('/', [
 ], UserController.createUser);
 router.post('/login', UserController.login);
 router.post('/logout', authentication, UserController.logout);
-router.post('/follow/:_id', authentication, UserController.follow);
-router.post('/unfollow/:_id', authentication, UserController.unfollow);
+
+router.put('/follow/:_id', authentication, UserController.follow);
+router.put('/unfollow/:_id', authentication, UserController.unfollow);
 
 module.exports = router;
