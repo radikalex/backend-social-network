@@ -14,6 +14,15 @@ const PostController = {
             res.status(500).send({ message: 'There was a problem getting users', error })
         }
     },
+    async getAllPosts (req, res) {
+        try {
+            const posts = await Post.find()
+            res.send({ message: "All posts", posts})    
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'There was a problem getting all posts', error })
+        }
+    },
     async createPost(req, res) {
         try {
             const post = await Post.create({ ...req.body, userId: req.user._id})
