@@ -5,7 +5,6 @@ const CommentController = {
     async getCommentsOnPost(req, res) {
         try {
             const post = await Post.findById(req.params.post_id);
-            console.log(post);
             if(!post) {
                 return res.status(400).send({ message: `There is no post with id ${req.params.post_id}`})
             }
@@ -52,6 +51,35 @@ const CommentController = {
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: 'There was a problem deleting the comment', error })
+        }
+    },
+    async giveLike(req, res) {
+        try {
+            const comment = await Comment.findById(req.params._id);
+            if(comment.likes.includes(req.user._id)) {
+                return res.status(400).send({ message: "You already have a like to this comment, you can't give it another one" });
+            }
+            comment.likes.push(req.user._id);
+            comment.save();
+            res.send({ message: ` 'Like a comment' successfully done` })
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem giving a like to a comment`, error })
+        }
+    },
+    async removeLike(req, res) {
+        try {
+            const comment = await Comment.findById(req.params._id);
+            if(!comment.likes.includes(req.user._id)) {
+                return res.status(400).send({ message: "This comment does not have your like" });
+            }
+            await Comment.findByIdAndUpdate(req.params._id, {
+                $pull: { likes: req.user._id }
+            });
+            res.send({ message: ` 'Remove a comment from a post' successfully done`})  
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: `There was a problem removing a like from comment`, error })
         }
     }
 }

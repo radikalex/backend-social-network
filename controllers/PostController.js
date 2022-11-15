@@ -96,7 +96,6 @@ const PostController = {
     async removeLike(req, res) {
         try {
             const post = await Post.findById(req.params._id);
-            console.log(post._id)
             if(!post.likes.includes(req.user._id)) {
                 return res.status(400).send({ message: "This post does not have your like" });
             }
