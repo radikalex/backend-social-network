@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const authentication = async(req, res, next) => {
     try {
         const token = req.headers.authorization;
-        const payload = jwt.verify(token, process.env.JWT_TOKEN);
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findOne({ _id: payload._id, tokens: token });
         if (!user) {
             return res.status(401).send({ message: 'You are not authenticated' });

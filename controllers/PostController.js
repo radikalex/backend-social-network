@@ -17,6 +17,15 @@ const PostController = {
     async getAllPosts (req, res) {
         try {
             const posts = await Post.find()
+                .populate('userId', ['username'])
+                .populate({
+                    path: 'commentIds',
+                    select: 'content',
+                    populate: {
+                        path: 'userId',
+                        select: 'username'
+                    }
+                })
             res.send({ message: "All posts", posts})    
         } catch (error) {
             console.error(error)
