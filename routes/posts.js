@@ -2,15 +2,24 @@ const express = require('express');
 const router = express.Router()
 const PostController = require('../controllers/PostController');
 const { authentication, isPostAuthor } = require('../middlewares/authentication');
+const validateBodyParams = require("../middlewares/validateBodyParams");
+const { check } = require("express-validator");
 
 router.get("/getPosts", PostController.getPosts);
 router.get("/getAllPosts", PostController.getAllPosts);
 router.get("/getPostById/:_id", PostController.getPostById);
 router.get("/getPostsByTitle/:title", PostController.getPostsByTitle);
-router.post("/", authentication, PostController.createPost);
+
+router.post("/", [
+    check("title", "The userame cant be empty").notEmpty(),
+    check("content", "The email format is not valid").notEmpty(),
+    validateBodyParams
+], authentication, PostController.createPost);
+
 router.put("/id/:_id", authentication, isPostAuthor, PostController.updatePost);
 router.put("/giveLike/:_id", authentication, PostController.giveLike);
 router.put("/removeLike/:_id", authentication, PostController.removeLike);
+
 router.delete("/id/:_id", authentication, isPostAuthor, PostController.deletePost);
 
 module.exports = router;

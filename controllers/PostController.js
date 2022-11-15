@@ -17,13 +17,16 @@ const PostController = {
     async getAllPosts (req, res) {
         try {
             const posts = await Post.find()
-                .populate('userId', ['username'])
+                .populate({
+                    path: 'userId',
+                    select: 'username -_id'
+                })
                 .populate({
                     path: 'commentIds',
-                    select: 'content',
+                    select: 'content -_id',
                     populate: {
                         path: 'userId',
-                        select: 'username'
+                        select: 'username -_id'
                     }
                 })
             res.send({ message: "All posts", posts})    
