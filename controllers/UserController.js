@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
-const { jwt_secret } = require("../config/keys")
 
 const UserController = {
     async createUser(req, res) {
@@ -26,7 +25,7 @@ const UserController = {
             if (!isMatch) {
                 return res.status(400).send({message: "Email or password incorrect"});
             }
-            const token = jwt.sign({ _id: user._id }, jwt_secret);
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_TOKEN);
             if (user.tokens.length > 4) 
                 user.tokens.shift();
             user.tokens.push(token);
