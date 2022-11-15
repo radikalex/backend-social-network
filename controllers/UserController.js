@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { unlink } = require("fs/promises");
+const path = require("path");
 
 const UserController = {
     async createUser(req, res, next) {
@@ -11,6 +13,19 @@ const UserController = {
         } catch (error) {
             console.error(error)
             next(error)
+        }
+    },
+    async deleteUser(req, res, next) {
+        try {
+            const user = await User.findByIdAndDelete(req.params._id);
+            if(user.user_img) {
+                const dir = path.resolve("./");
+                await unlink(path.join(dir, user.user_img));
+            }
+            res.send({ message: "User deleted", user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: 'There was a problem deleting the user', error })
         }
     },
     async login(req, res) {

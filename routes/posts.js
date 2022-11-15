@@ -4,15 +4,16 @@ const PostController = require('../controllers/PostController');
 const { authentication, isPostAuthor } = require('../middlewares/authentication');
 const validateBodyParams = require("../middlewares/validateBodyParams");
 const { check } = require("express-validator");
+const { uploadPostImages } = require('../middlewares/upload');
 
 router.get("/getPosts", PostController.getPosts);
 router.get("/getAllPosts", PostController.getAllPosts);
 router.get("/getPostById/:_id", PostController.getPostById);
 router.get("/getPostsByTitle/:title", PostController.getPostsByTitle);
 
-router.post("/", [
-    check("title", "The userame cant be empty").notEmpty(),
-    check("content", "The email format is not valid").notEmpty(),
+router.post("/", uploadPostImages.single('post_img'), [
+    check("title", "The title cant be empty").notEmpty(),
+    check("content", "The content cant be empty").notEmpty(),
     validateBodyParams
 ], authentication, PostController.createPost);
 

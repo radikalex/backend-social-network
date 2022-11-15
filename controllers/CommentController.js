@@ -1,5 +1,7 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const { unlink } = require("fs/promises");
+const path = require("path");
 
 const CommentController = {
     async getCommentsOnPost(req, res) {
@@ -47,6 +49,10 @@ const CommentController = {
     async deleteComment(req, res) {
         try {
             const comment = await Comment.findByIdAndDelete(req.params._id);
+            if(comment.comment_img) {
+                const dir = path.resolve("./");
+                await unlink(path.join(dir, comment.comment_img));
+            }
             res.send({ message: "Comment deleted", comment });
         } catch (error) {
             console.error(error);

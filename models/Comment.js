@@ -11,6 +11,7 @@ const CommentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Post'
     },
+    comment_img: String,
     likes: [
         {
             type: ObjectId,

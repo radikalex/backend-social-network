@@ -32,6 +32,9 @@ const isAdmin = async(req, res, next) => {
 const isPostAuthor = async(req, res, next) => {
     try {
         const post = await Post.findById(req.params._id);
+        if(!post) {
+            return res.status(400).send({ message: `No post with id ${req.params._id}` });
+        }
         if (post.userId.toString() !== req.user._id.toString()) { 
             return res.status(403).send({ message: 'This post is not yours' });
         }
@@ -45,6 +48,9 @@ const isPostAuthor = async(req, res, next) => {
 const isCommentAuthor = async(req, res, next) => {
     try {
         const comment = await Comment.findById(req.params._id);
+        if(!comment) {
+            return res.status(400).send({ message: `No comment with id ${req.params._id}` });
+        }
         if (comment.userId.toString() !== req.user._id.toString()) { 
             return res.status(403).send({ message: 'This comment is not yours' });
         }

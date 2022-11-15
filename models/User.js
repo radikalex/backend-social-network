@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
         unique: true
     },
     password: String,
+    user_img: String,
     followers: [
         {
             type: ObjectId,

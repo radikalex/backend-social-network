@@ -1,5 +1,7 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const { unlink } = require("fs/promises");
+const path = require("path");
 
 const PostController = {
     async getPosts (req, res) {
@@ -56,6 +58,8 @@ const PostController = {
             );
             res.status(201).send({message: "Post updated", post})
         } catch (error) {
+            const dir = path.resolve("./uploads");
+            await unlink(path.join(dir, req.body.img_product));
             console.error(error)
             res.status(500).send({ message: 'There was a problem updating the post', error })
         }
@@ -64,6 +68,10 @@ const PostController = {
         try {
             const post = await Post.findByIdAndDelete(req.params._id);
             res.send({ message: "Product deleted", post });
+            if(post.post_img) {
+                const dir = path.resolve("./");
+                await unlink(path.join(dir, post.post_img));
+            }
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: 'There was a problem deleting the post', error })
