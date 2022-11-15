@@ -21,6 +21,7 @@ router.post('/', uploadUserImages.single('user_img'), [
 router.post('/login', UserController.login);
 router.post('/logout', authentication, UserController.logout);
 
+router.put('/updateLoggedUser', authentication, uploadUserImages.single('user_img'), UserController.updateLoggedUser);
 router.put('/follow/:_id', authentication, UserController.follow);
 router.put('/unfollow/:_id', authentication, UserController.unfollow);
 

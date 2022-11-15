@@ -33,6 +33,10 @@ const CommentController = {
     },
     async updateComment(req, res) {
         try {
+            const old_comment = await Comment.findById(req.params._id);
+            if(!old_comment) {
+                return res.status(404).send({ message: `No comment with id ${req.params._id}` })
+            }
             const comment = await Comment.findByIdAndUpdate(
                 req.params._id,
                 { ...req.body,  userId: req.user._id},
@@ -40,8 +44,14 @@ const CommentController = {
                   new: true,
                 }
             );
-            res.status(201).send({message: "Comment updated", comment})
+            if ( old_comment.comment_img && comment.comment_img !== old_comment.comment_img ) {
+                const dir = path.resolve("./");
+                await unlink(path.join(dir, old_comment.comment_img));
+            }
+            res.status(201).send({message: "Comment updated", comment});
         } catch (error) {
+            const dir = path.resolve("./");
+            await unlink(path.join(dir, req.body.comment_img));
             console.error(error)
             res.status(500).send({ message: 'There was a problem updating the comment', error })
         }

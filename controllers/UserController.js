@@ -76,6 +76,31 @@ const UserController = {
             res.status(500).send({ message: "There was a problem getting the logged user", error})
         }
     },
+    async updateLoggedUser(req, res) {
+        try {
+            const old_user = await User.findById(req.user._id)
+            if(!old_user) {
+                return res.status(404).send({ message: `No user with id ${req.user._id}` })
+            }
+            const user = await User.findByIdAndUpdate(
+                req.user._id,
+                { ...req.body },
+                {
+                  new: true,
+                }
+            );
+            if (old_user.user_img && user.user_img !== old_user.user_img) {
+                const dir = path.resolve("./");
+                await unlink(path.join(dir, old_user.user_img));
+            }
+            res.status(201).send({message: "User updated", user})
+        } catch (error) {
+            const dir = path.resolve("./");
+            await unlink(path.join(dir, req.body.user_img));
+            console.error(error)
+            res.status(500).send({ message: 'There was a problem updating the user', error })
+        }
+    },
     async getUserById(req, res) {
         try {
             const user = await User.findById(req.params._id);

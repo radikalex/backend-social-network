@@ -17,7 +17,7 @@ router.post("/", uploadPostImages.single('post_img'), [
     validateBodyParams
 ], authentication, PostController.createPost);
 
-router.put("/id/:_id", authentication, isPostAuthor, PostController.updatePost);
+router.put("/id/:_id", authentication, isPostAuthor, uploadPostImages.single('post_img'), PostController.updatePost);
 router.put("/giveLike/:_id", authentication, PostController.giveLike);
 router.put("/removeLike/:_id", authentication, PostController.removeLike);
 
