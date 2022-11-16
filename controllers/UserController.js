@@ -3,16 +3,35 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { unlink } = require("fs/promises");
 const path = require("path");
+const transporter = require("../config/nodemailer");
 
 const UserController = {
     async createUser(req, res, next) {
         try {
+            req.body.confirmed = false;
             const password = await bcrypt.hash(req.body.password, 10);
             const user = await User.create({ ...req.body, password })
-            res.status(201).send(user)
+            const url = 'http://localhost:8080/users/confirm/'+ req.body.email
+            await transporter.sendMail({
+                to: req.body.email,
+                subject: "Confirm your email",
+                html: `<h3>Welcome ${user.username}! Please, confirm your email to be able to log in </h3>
+                <a href="${url}"> Click to confirm your email</a>
+                `,
+            });
+            res.status(201).send({message: "User created. An email has been sent to confirm your email", user})
         } catch (error) {
             console.error(error)
             next(error)
+        }
+    },
+    async confirm(req,res){
+        try {
+          await User.findOneAndUpdate({email: req.params.email}, {confirmed:true})
+          res.status(201).send( "User confirmed successfully" );
+        } catch (error) {
+          console.error(error)
+          res.status(500).send(error)
         }
     },
     async deleteUser(req, res, next) {
@@ -39,6 +58,9 @@ const UserController = {
             const isMatch = bcrypt.compare(req.body.password, user.password);
             if (!isMatch) {
                 return res.status(400).send({message: "Email or password incorrect"});
+            }
+            if(!user.confirmed) {
+                return res.status(400).send({message: "Please, confirm your email first"});
             }
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
             if (user.tokens.length > 4) 

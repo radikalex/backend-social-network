@@ -11,6 +11,7 @@ router.get('/', UserController.getAllUsers);
 router.get('/getLoggedUser', authentication, UserController.getLoggeduser);
 router.get('/id/:_id', UserController.getUserById);
 router.get('/getUsersByUsername/:username', UserController.getUsersByUsername);
+router.get('/confirm/:email', UserController.confirm);
 
 router.post('/', uploadUserImages.single('user_img'), [
     check("username", "The userame cant be empty").notEmpty(),
