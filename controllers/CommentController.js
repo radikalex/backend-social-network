@@ -11,7 +11,7 @@ const CommentController = {
                 return res.status(400).send({ message: `There is no post with id ${req.params.post_id}`})
             }
             const comments = await Comment.find({ postId: req.params.post_id})
-            res.status(201).send({message: `Comments in post ${req.params.post_id}`, comments})
+            res.status(200).send({message: `Comments in post ${req.params.post_id}`, comments})
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: 'There was a problem creating the post', error })
@@ -48,7 +48,7 @@ const CommentController = {
                 const dir = path.resolve("./");
                 await unlink(path.join(dir, old_comment.comment_img));
             }
-            res.status(201).send({message: "Comment updated", comment});
+            res.status(200).send({message: "Comment updated", comment});
         } catch (error) {
             const dir = path.resolve("./");
             await unlink(path.join(dir, req.body.comment_img));
