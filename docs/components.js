@@ -14,8 +14,7 @@ module.exports = {
                     _id: {
                         type: 'objectId',
                         description: "User identification number",
-                        example: "6374d93fdf49562705c9296f",
-                        required: true
+                        example: "6374d93fdf49562705c9296f"
                     },
                     username: {
                         type: 'string',
@@ -59,6 +58,46 @@ module.exports = {
                     }
                 }
             },
+            posts: {
+                type: 'object',
+                properties: {
+                    _id: {
+                        type: 'objectId',
+                        description: "Post identification number",
+                        example: "6374db44df49562705c92994"
+                    },
+                    title: {
+                        type: 'string',
+                        description: "Title of the post",
+                        example: "Title 1"
+                    },
+                    content: {
+                        type: "string",
+                        description: "Content of the post",
+                        example: "This is the content of a post"
+                    },
+                    usertId: {
+                        type: "objectId",
+                        description: "Id thath references the author",
+                        example: "6374d93fdf49562705c9296f"
+                    },
+                    post_img: {
+                        type: "string",
+                        description: "Path to user image",
+                        example: "uploads/posts_images/image.png"
+                    },
+                    likes: {
+                        type: "array",
+                        description: "Array with the ids of the users that liked this post",
+                        example: []
+                    },
+                    commentsIds: {
+                        type: "array",
+                        description: "Array with the ids of the comment in this post",
+                        example: []
+                    }
+                }
+            },
             userInput: {
                 type: "object",
                 properties: {
@@ -91,6 +130,33 @@ module.exports = {
                         type: "file",
                         in: "formData",
                         description: "User image",
+                    }
+                }
+            },
+            postInput: {
+                type: "object",
+                properties: {
+                    title: {
+                        name: "title",
+                        schema: {
+                            type: "string",
+                        },
+                        in: "formData",
+                        description: "Post title",
+                    },
+                    content: {
+                        name: "content",
+                        schema: {
+                            type: "string",
+                        },
+                        in: "formData",
+                        description: "Post content",
+                    },
+                    post_img: {
+                        name: "post_img",
+                        type: "file",
+                        in: "formData",
+                        description: "Post image",
                     }
                 }
             }

@@ -357,5 +357,76 @@ module.exports = {
                 },
             }
         },
+        "/users/updateLoggedUser": {
+            put: {
+                tags: ["users"],
+                security: [{
+                    ApiKeyAuth: []
+                }],
+                description: "Update Logged User",
+                operationId: "updateLoggedUser",
+                parameters: [],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                $ref: "#/components/schemas/userInput",
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    201: {
+                        description: "Succesful operation",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/users",
+                                }
+                            },
+                        },
+                    },
+                    401: {
+                        description: "You are not authenticated"
+                    },
+                    500: {
+                        description: "Server error",
+                    },
+                },
+            }
+        },
+        "/users/{_id}": {
+            delete: {
+                tags: ["users"],
+                description: "Delete user by id",
+                operationId: "deleteUsedById",
+                parameters: [{
+                    name: "_id",
+                    schema: {
+                        type: "objectId",
+                    },
+                    in: "path",
+                    description: "Id of user",
+                }],
+                responses: {
+                    200: {
+                        description: "User with this id",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/users",
+                                },
+                            },
+                        },
+                    },
+                    404: {
+                        description: "No user with this id"
+                    },
+                    500: {
+                        description: "Server error"
+                    }
+                },
+            },
+        }
     },
 };

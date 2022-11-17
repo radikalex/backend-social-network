@@ -75,7 +75,7 @@ const PostController = {
     async deletePost(req, res) {
         try {
             const post = await Post.findByIdAndDelete(req.params._id);
-            res.send({ message: "Product deleted", post });
+            res.send({ message: "Post deleted", post });
             if(post.post_img) {
                 const dir = path.resolve("./");
                 await unlink(path.join(dir, post.post_img));
