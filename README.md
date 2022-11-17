@@ -35,7 +35,7 @@ If you don't want to download this repository, to test the endpoints you can imp
 
 ## Pre-requirements 📣
 
-# 📋 Pre requirements
+If you want to use the repository locally follow these steps:
 
 0 - You need to have Node and MongoDB installed on your computer.
 
