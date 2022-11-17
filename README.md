@@ -2,6 +2,7 @@
 
 This project is the backend of a social network using node, express and mongoose. 
 The main objective of the project was to use the mongoose ODM to simulate a simple social network in which there are users, posts and post comments.
+This backend has been pushed to production, so you can use the url ' https://backend-social-network.vercel.app/ ' to test the endpoints.
 
 ## Endpoints 🔨
 
