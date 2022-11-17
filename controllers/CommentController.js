@@ -25,10 +25,10 @@ const CommentController = {
             }
             const comment = await Comment.create({ ...req.body, postId: req.params.post_id, userId: req.user._id})
             await Post.findByIdAndUpdate(req.params.post_id, { $push: {commentIds: comment._id}})
-            res.status(201).send({message: "Post created", comment})
+            res.status(201).send({message: "Comment created", comment})
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: 'There was a problem creating the post', error })
+            res.status(500).send({ message: 'There was a problem creating the comment', error })
         }
     },
     async updateComment(req, res) {
