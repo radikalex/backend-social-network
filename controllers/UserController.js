@@ -159,7 +159,7 @@ const UserController = {
     },
     async follow(req, res) {
         try {
-            if(req.params._id === req.user._id) {
+            if(req.params._id === req.user._id.toString()) {
                 return res.status(400).send({message: "Users cannot follow themselves"});
             }
             const followed_user = await User.findById(req.params._id);
@@ -182,7 +182,7 @@ const UserController = {
     },
     async unfollow(req, res) {
         try {
-            if(req.params._id === req.user._id) {
+            if(req.params._id === req.user._id.toString()) {
                 return res.status(400).send({message: "Users cannot unfollow themselves"});
             }
             const following_user = await User.findById(req.params._id);
