@@ -3,6 +3,8 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const UserSchema = new mongoose.Schema(
     {
+        firstName: String,
+        lastName: String,
         username: String,
         email: {
             type: String,
@@ -10,6 +12,8 @@ const UserSchema = new mongoose.Schema(
         },
         password: String,
         user_img: String,
+        darkMode: Boolean,
+        bio: String,
         role: String,
         followers: [
             {
