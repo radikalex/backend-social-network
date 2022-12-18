@@ -17,6 +17,18 @@ const UserController = {
             req.body.following = [];
             req.body.tokens = [];
             req.body.postIds = [];
+            if (req.body.password !== req.body.password2) {
+                return res.status(400).send({
+                    ok: false,
+                    errors: [
+                        {
+                            msg: "Passwords didnt match",
+                            param: "password2",
+                            location: "body",
+                        },
+                    ],
+                });
+            }
             const password = await bcrypt.hash(req.body.password, 10);
             const user = await User.create({ ...req.body, password });
             // const url = "http://localhost:8080/users/confirm/" + req.body.email;
