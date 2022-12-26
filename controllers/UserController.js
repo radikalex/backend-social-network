@@ -8,15 +8,6 @@ const transporter = require("../config/nodemailer");
 const UserController = {
     async createUser(req, res, next) {
         try {
-            req.body.confirmed = false;
-            req.body.user_img = "";
-            req.body.darkMode = false;
-            req.body.bio = "";
-            req.body.role = "user";
-            req.body.followers = [];
-            req.body.following = [];
-            req.body.tokens = [];
-            req.body.postIds = [];
             if (req.body.password !== req.body.password2) {
                 return res.status(400).send({
                     ok: false,
@@ -29,6 +20,15 @@ const UserController = {
                     ],
                 });
             }
+            req.body.confirmed = true;
+            req.body.user_img = "";
+            req.body.darkMode = false;
+            req.body.bio = "";
+            req.body.role = "user";
+            req.body.followers = [];
+            req.body.following = [];
+            req.body.tokens = [];
+            req.body.postIds = [];
             const password = await bcrypt.hash(req.body.password, 10);
             const user = await User.create({ ...req.body, password });
             // const url = "http://localhost:8080/users/confirm/" + req.body.email;

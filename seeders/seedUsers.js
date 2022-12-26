@@ -34,7 +34,10 @@ const users = [
         following: [],
         confirmed: true,
         tokens: [],
-        postIds: [],
+        postIds: [
+            mongoose.Types.ObjectId("569ed8269353e9f4c51617b1"),
+            mongoose.Types.ObjectId("569ed8269353e9f4c51617b2"),
+        ],
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617ac"),
