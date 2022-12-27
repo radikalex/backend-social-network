@@ -13,7 +13,11 @@ const PostController = {
                 .in(ids)
                 .limit(limit)
                 .skip((page - 1) * limit)
-                .sort({ date: -1 });
+                .sort({ date: -1 })
+                .populate({
+                    path: "userId",
+                    select: "username firstName lastName -_id",
+                });
             res.send({ message: "Posts obtained", posts });
         } catch (error) {
             console.error(error);
@@ -25,18 +29,14 @@ const PostController = {
     },
     async getAllPosts(req, res) {
         try {
+            const { page = 1, limit = 10 } = req.query;
             const posts = await Post.find()
+                .limit(limit)
+                .skip((page - 1) * limit)
+                .sort({ date: -1 })
                 .populate({
                     path: "userId",
-                    select: "username -_id",
-                })
-                .populate({
-                    path: "commentIds",
-                    select: "content -_id",
-                    populate: {
-                        path: "userId",
-                        select: "username -_id",
-                    },
+                    select: "username firstName lastName -_id",
                 });
             res.send({ message: "All posts", posts });
         } catch (error) {
@@ -144,7 +144,14 @@ const PostController = {
     },
     async giveLike(req, res) {
         try {
-            const post = await Post.findById(req.params._id);
+            const post = await Post.findById(req.params._id).populate({
+                path: "userId",
+                select: "username firstName lastName -_id",
+            });
+            if (!post)
+                return res.status(400).send({
+                    message: "No post found",
+                });
             if (post.likes.includes(req.user._id)) {
                 return res.status(400).send({
                     message:
@@ -153,7 +160,10 @@ const PostController = {
             }
             post.likes.push(req.user._id);
             post.save();
-            res.send({ message: ` 'Like a post' successfully done` });
+            res.send({
+                message: ` 'Like a post' successfully done`,
+                post,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -164,17 +174,29 @@ const PostController = {
     },
     async removeLike(req, res) {
         try {
-            const post = await Post.findById(req.params._id);
+            let post = await Post.findById(req.params._id);
+            if (!post)
+                return res.status(400).send({
+                    message: "No post found",
+                });
             if (!post.likes.includes(req.user._id)) {
                 return res
                     .status(400)
                     .send({ message: "This post does not have your like" });
             }
-            await Post.findByIdAndUpdate(req.params._id, {
-                $pull: { likes: req.user._id },
+            post = await Post.findByIdAndUpdate(
+                req.params._id,
+                {
+                    $pull: { likes: req.user._id },
+                },
+                { new: true }
+            ).populate({
+                path: "userId",
+                select: "username firstName lastName -_id",
             });
             res.send({
                 message: ` 'Remove a like from a post' successfully done`,
+                post,
             });
         } catch (error) {
             console.error(error);
