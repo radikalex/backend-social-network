@@ -16,7 +16,7 @@ const PostController = {
                 .sort({ date: -1 })
                 .populate({
                     path: "userId",
-                    select: "username firstName lastName -_id",
+                    select: "username firstName lastName user_img -_id",
                 });
             res.send({ message: "Posts obtained", posts });
         } catch (error) {
@@ -36,7 +36,7 @@ const PostController = {
                 .sort({ date: -1 })
                 .populate({
                     path: "userId",
-                    select: "username firstName lastName -_id",
+                    select: "username firstName lastName user_img -_id",
                 });
             res.send({ message: "All posts", posts });
         } catch (error) {
@@ -146,7 +146,7 @@ const PostController = {
         try {
             const post = await Post.findById(req.params._id).populate({
                 path: "userId",
-                select: "username firstName lastName -_id",
+                select: "username firstName lastName user_img -_id",
             });
             if (!post)
                 return res.status(400).send({
@@ -192,7 +192,7 @@ const PostController = {
                 { new: true }
             ).populate({
                 path: "userId",
-                select: "username firstName lastName -_id",
+                select: "username firstName lastName user_img -_id",
             });
             res.send({
                 message: ` 'Remove a like from a post' successfully done`,
