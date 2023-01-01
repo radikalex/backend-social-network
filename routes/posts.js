@@ -18,8 +18,8 @@ router.post(
     "/",
     uploadPostImages.single("post_img"),
     [
-        check("title", "The title cant be empty").notEmpty(),
         check("content", "The content cant be empty").notEmpty(),
+        check("date", "The date cant be empty").notEmpty(),
         validateBodyParams,
     ],
     authentication,

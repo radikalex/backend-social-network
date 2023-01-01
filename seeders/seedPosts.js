@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const posts = [
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b1"),
-        title: "Seeder post 1",
         content: "Im crying por los ojos mios",
         date: "2022-12-26",
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ab"),
@@ -13,7 +12,6 @@ const posts = [
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b2"),
-        title: "Seeder post 2",
         content: "Seeder content 2",
         date: "2022-12-23",
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ab"),
@@ -23,9 +21,8 @@ const posts = [
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b3"),
-        title: "Seeder post 3",
         content: "Seeder content 3",
-        date: "2022-12-30",
+        date: "2021-08-01",
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ac"),
         post_img: "",
         likes: [],
@@ -33,7 +30,6 @@ const posts = [
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b4"),
-        title: "Seeder post 4",
         content: "Seeder content 4",
         date: "2022-11-13",
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ad"),

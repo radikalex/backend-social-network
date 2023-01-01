@@ -8,7 +8,11 @@ const PostController = {
         try {
             const { page = 1, limit = 10 } = req.query;
             const ids = [req.user._id, ...req.user.following];
-            const posts = await Post.find()
+            const posts = await Post.find({
+                date: {
+                    $lt: req.query.date,
+                },
+            })
                 .where("userId")
                 .in(ids)
                 .limit(limit)
@@ -30,7 +34,11 @@ const PostController = {
     async getAllPosts(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;
-            const posts = await Post.find()
+            const posts = await Post.find({
+                date: {
+                    $lt: req.query.date,
+                },
+            })
                 .limit(limit)
                 .skip((page - 1) * limit)
                 .sort({ date: -1 })
@@ -56,7 +64,14 @@ const PostController = {
             await User.findByIdAndUpdate(req.user._id, {
                 $push: { postIds: post._id },
             });
-            res.status(201).send({ message: "Post created", post });
+            const postPopulated = await Post.findById(post._id).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
+            });
+            res.status(201).send({
+                message: "Post created",
+                post: postPopulated,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
