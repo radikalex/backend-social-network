@@ -8,7 +8,10 @@ const posts = [
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ab"),
         post_img: "posts_images/default/seederPost1.jpg",
         likes: [],
-        commentIds: [],
+        commentIds: [
+            mongoose.Types.ObjectId("569ed8269353e9f4c51617c1"),
+            mongoose.Types.ObjectId("569ed8269353e9f4c51617c2"),
+        ],
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b2"),

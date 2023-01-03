@@ -24,10 +24,6 @@ const generateMulter = (imgFolderName) =>
                     case "posts_images":
                         req.body.post_img = "posts_images/uploads/" + filename;
                         break;
-                    case "comments_images":
-                        req.body.comment_img =
-                            "comments_images/uploads/" + filename;
-                        break;
                 }
                 cb(null, filename);
             },
@@ -39,6 +35,5 @@ const generateMulter = (imgFolderName) =>
     });
 const uploadUserImages = generateMulter("users_images");
 const uploadPostImages = generateMulter("posts_images");
-const uploadCommentImages = generateMulter("comments_images");
 
-module.exports = { uploadUserImages, uploadPostImages, uploadCommentImages };
+module.exports = { uploadUserImages, uploadPostImages };

@@ -128,7 +128,21 @@ const PostController = {
     },
     async getPostById(req, res) {
         try {
-            const post = await Post.findById(req.params._id);
+            const post = await Post.findById(req.params._id)
+                .populate({
+                    path: "userId",
+                    select: "username firstName lastName user_img -_id",
+                })
+                .populate({
+                    path: "commentIds",
+                    populate: {
+                        path: "userId",
+                        select: "username firstName lastName user_img -_id",
+                    },
+                    options: {
+                        limit: 5,
+                    },
+                });
             res.send({ message: `Post with id ${req.params._id}`, post });
         } catch (error) {
             console.error(error);
