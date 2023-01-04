@@ -7,7 +7,7 @@ const comments = [
             "Content comment 2 Content comment 2 Content comment 2 Content comment 2",
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ac"),
         postId: mongoose.Types.ObjectId("569ed8269353e9f4c51617b1"),
-        date: "2022-12-27",
+        date: "2022-11-27",
         likes: [],
     },
     {

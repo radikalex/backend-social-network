@@ -140,7 +140,7 @@ const PostController = {
                         select: "username firstName lastName user_img -_id",
                     },
                     options: {
-                        limit: 5,
+                        sort: { date: -1 },
                     },
                 });
             res.send({ message: `Post with id ${req.params._id}`, post });
