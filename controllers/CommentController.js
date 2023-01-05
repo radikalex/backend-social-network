@@ -6,15 +6,29 @@ const path = require("path");
 const CommentController = {
     async getCommentsOnPost(req, res) {
         try {
+            const { page = 1, limit = 10 } = req.query;
             const post = await Post.findById(req.params.post_id);
             if (!post) {
                 return res.status(400).send({
                     message: `There is no post with id ${req.params.post_id}`,
                 });
             }
-            const comments = await Comment.find({ postId: req.params.post_id });
+            const comments = await Comment.find({
+                postId: req.params.post_id,
+                date: {
+                    $lt: req.query.date,
+                },
+            })
+                .limit(limit)
+                .skip((page - 1) * limit)
+                .sort({ date: -1 })
+                .populate({
+                    path: "userId",
+                    select: "username firstName lastName user_img -_id",
+                });
             res.status(200).send({
                 message: `Comments in post ${req.params.post_id}`,
+                page,
                 comments,
             });
         } catch (error) {

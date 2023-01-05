@@ -17,11 +17,7 @@ router.get("/getPostsByTitle/:title", PostController.getPostsByTitle);
 router.post(
     "/",
     uploadPostImages.single("post_img"),
-    [
-        check("content", "The content cant be empty").notEmpty(),
-        check("date", "The date cant be empty").notEmpty(),
-        validateBodyParams,
-    ],
+    [check("date", "The date cant be empty").notEmpty(), validateBodyParams],
     authentication,
     PostController.createPost
 );
