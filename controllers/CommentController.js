@@ -52,9 +52,13 @@ const CommentController = {
                 postId: req.params.post_id,
                 userId: req.user._id,
             });
-            await Post.findByIdAndUpdate(req.params.post_id, {
-                $push: { commentIds: comment._id },
-            });
+            await Post.findByIdAndUpdate(
+                req.params.post_id,
+                {
+                    $push: { commentIds: comment._id },
+                },
+                { timestamps: false }
+            );
             const populatedComment = await comment.populate({
                 path: "userId",
                 select: "username firstName lastName user_img -_id",
@@ -107,10 +111,6 @@ const CommentController = {
     async deleteComment(req, res) {
         try {
             const comment = await Comment.findByIdAndDelete(req.params._id);
-            if (comment.comment_img) {
-                const dir = path.resolve("./");
-                await unlink(path.join(dir, comment.comment_img));
-            }
             res.send({ message: "Comment deleted", comment });
         } catch (error) {
             console.error(error);
@@ -122,7 +122,10 @@ const CommentController = {
     },
     async giveLike(req, res) {
         try {
-            const comment = await Comment.findById(req.params._id);
+            const comment = await Comment.findById(req.params._id).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
+            });
             if (comment.likes.includes(req.user._id)) {
                 return res.status(400).send({
                     message:
@@ -131,7 +134,10 @@ const CommentController = {
             }
             comment.likes.push(req.user._id);
             comment.save();
-            res.send({ message: ` 'Like a comment' successfully done` });
+            res.send({
+                message: ` 'Like a comment' successfully done`,
+                comment,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -142,17 +148,25 @@ const CommentController = {
     },
     async removeLike(req, res) {
         try {
-            const comment = await Comment.findById(req.params._id);
+            let comment = await Comment.findById(req.params._id);
             if (!comment.likes.includes(req.user._id)) {
                 return res
                     .status(400)
                     .send({ message: "This comment does not have your like" });
             }
-            await Comment.findByIdAndUpdate(req.params._id, {
-                $pull: { likes: req.user._id },
+            comment = await Comment.findByIdAndUpdate(
+                req.params._id,
+                {
+                    $pull: { likes: req.user._id },
+                },
+                { new: true }
+            ).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
             });
             res.send({
                 message: ` 'Remove a comment from a post' successfully done`,
+                comment,
             });
         } catch (error) {
             console.error(error);

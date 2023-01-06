@@ -8,6 +8,7 @@ const comments = [
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ac"),
         postId: mongoose.Types.ObjectId("569ed8269353e9f4c51617b1"),
         date: "2022-11-27",
+        dateCreated: "2022-11-26",
         likes: [],
     },
     {
@@ -16,6 +17,7 @@ const comments = [
         userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ad"),
         postId: mongoose.Types.ObjectId("569ed8269353e9f4c51617b1"),
         date: "2022-12-28",
+        dateCreated: "2022-12-28",
         likes: [],
     },
 ];

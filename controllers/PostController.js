@@ -59,6 +59,7 @@ const PostController = {
         try {
             const post = await Post.create({
                 ...req.body,
+                dateCreated: req.body.date,
                 userId: req.user._id,
             });
             await User.findByIdAndUpdate(req.user._id, {
@@ -94,14 +95,21 @@ const PostController = {
                 {
                     new: true,
                 }
-            );
-            if (old_post.post_img && post.post_img !== old_post.post_img) {
-                const dir = path.resolve("./");
+            ).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
+            });
+            if (
+                old_post.post_img &&
+                post.post_img !== old_post.post_img &&
+                !/default\/.*/gm.test(old_post.post_img)
+            ) {
+                const dir = path.resolve("./images");
                 await unlink(path.join(dir, old_post.post_img));
             }
             res.status(201).send({ message: "Post updated", post });
         } catch (error) {
-            const dir = path.resolve("./");
+            const dir = path.resolve("./images");
             await unlink(path.join(dir, req.body.post_img));
             console.error(error);
             res.status(500).send({
@@ -113,11 +121,11 @@ const PostController = {
     async deletePost(req, res) {
         try {
             const post = await Post.findByIdAndDelete(req.params._id);
-            res.send({ message: "Post deleted", post });
-            if (post.post_img) {
-                const dir = path.resolve("./");
+            if (post.post_img && !/default\/.*/gm.test(post.post_img)) {
+                const dir = path.resolve("./images");
                 await unlink(path.join(dir, post.post_img));
             }
+            res.send({ message: "Post deleted", post });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -212,6 +220,7 @@ const PostController = {
                 path: "userId",
                 select: "username firstName lastName user_img -_id",
             });
+            console.log(post);
             res.send({
                 message: ` 'Remove a like from a post' successfully done`,
                 post,
