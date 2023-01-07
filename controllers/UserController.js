@@ -192,16 +192,16 @@ const UserController = {
             });
         }
     },
-    async getUsersByUsername(req, res) {
+    async getUserByUsername(req, res) {
         try {
             if (req.params.username.length > 20) {
                 return res.status(400).send("Username too long");
             }
             const username = new RegExp(req.params.username, "i");
-            const users = await User.find({ username });
+            const user = await User.findOne({ username });
             res.send({
-                message: `Users with '${req.params.username}' in their username`,
-                users,
+                message: `User with @${req.params.username} username'`,
+                user,
             });
         } catch (error) {
             console.error(error);
@@ -246,7 +246,10 @@ const UserController = {
             const following_user = await User.findById(req.user._id);
             following_user.following.push(followed_user._id);
             following_user.save();
-            res.send({ message: "Follow successful" });
+            res.send({
+                message: "Follow successful",
+                newFollower: req.user,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -279,7 +282,10 @@ const UserController = {
             await User.findByIdAndUpdate(req.user._id, {
                 $pull: { following: following_user._id },
             });
-            res.send({ message: "Unfollow successful" });
+            res.send({
+                message: "Unfollow successful",
+                oldFollower: req.user,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({

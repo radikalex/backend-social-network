@@ -36,6 +36,16 @@ const posts = [
     },
     {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b4"),
+        content: "Seeder\n content\n 5\n linebreaks",
+        date: "2022-09-01",
+        dateCreated: "2022-09-01",
+        userId: mongoose.Types.ObjectId("569ed8269353e9f4c51617ac"),
+        post_img: "",
+        likes: [],
+        commentIds: [],
+    },
+    {
+        _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617b5"),
         content: "Seeder content 4",
         date: "2022-11-13",
         dateCreated: "2022-11-13",
