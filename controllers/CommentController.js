@@ -49,6 +49,7 @@ const CommentController = {
             }
             const comment = await Comment.create({
                 ...req.body,
+                dateCreated: req.body.date,
                 postId: req.params.post_id,
                 userId: req.user._id,
             });
@@ -89,14 +90,10 @@ const CommentController = {
                 {
                     new: true,
                 }
-            );
-            if (
-                old_comment.comment_img &&
-                comment.comment_img !== old_comment.comment_img
-            ) {
-                const dir = path.resolve("./");
-                await unlink(path.join(dir, old_comment.comment_img));
-            }
+            ).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
+            });
             res.status(200).send({ message: "Comment updated", comment });
         } catch (error) {
             const dir = path.resolve("./");
@@ -111,6 +108,13 @@ const CommentController = {
     async deleteComment(req, res) {
         try {
             const comment = await Comment.findByIdAndDelete(req.params._id);
+            await Post.findByIdAndUpdate(
+                comment.postId,
+                {
+                    $pull: { commentIds: req.params._id },
+                },
+                { new: true }
+            );
             res.send({ message: "Comment deleted", comment });
         } catch (error) {
             console.error(error);
