@@ -2,4 +2,5 @@
 .env
 
 /images/users_images/uploads/
+/images/posts_images/uploads/
 /images/comments_images/uploads/
