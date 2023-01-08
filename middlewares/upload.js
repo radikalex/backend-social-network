@@ -10,9 +10,6 @@ const generateMulter = (imgFolderName) =>
                 const dir_img = path.resolve(
                     `./images/${imgFolderName}/uploads`
                 );
-                if (!fs.existsSync(dir_img)) {
-                    fs.mkdirSync(dir_img);
-                }
                 cb(null, `./images/${imgFolderName}/uploads`);
             },
             filename: (req, file, cb) => {
