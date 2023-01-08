@@ -198,7 +198,9 @@ const UserController = {
                 return res.status(400).send("Username too long");
             }
             const username = new RegExp(req.params.username, "i");
-            const user = await User.findOne({ username });
+            const user = await User.findOne({ username })
+                .populate("followers")
+                .populate("following");
             res.send({
                 message: `User with @${req.params.username} username'`,
                 user,
@@ -248,6 +250,7 @@ const UserController = {
             following_user.save();
             res.send({
                 message: "Follow successful",
+                followedUser: followed_user,
                 newFollower: req.user,
             });
         } catch (error) {
@@ -276,14 +279,19 @@ const UserController = {
                     .status(400)
                     .send({ message: "You dont follow this user" });
             }
-            await User.findByIdAndUpdate(following_user._id, {
-                $pull: { followers: req.user._id },
-            });
+            const unfollowedUser = await User.findByIdAndUpdate(
+                following_user._id,
+                {
+                    $pull: { followers: req.user._id },
+                },
+                { new: true }
+            );
             await User.findByIdAndUpdate(req.user._id, {
                 $pull: { following: following_user._id },
             });
             res.send({
                 message: "Unfollow successful",
+                unfollowedUser,
                 oldFollower: req.user,
             });
         } catch (error) {
