@@ -292,7 +292,6 @@ const PostController = {
                 path: "userId",
                 select: "username firstName lastName user_img -_id",
             });
-            console.log(post);
             res.send({
                 message: ` 'Remove a like from a post' successfully done`,
                 post,
