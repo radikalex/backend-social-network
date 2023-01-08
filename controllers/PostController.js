@@ -58,6 +58,25 @@ const PostController = {
         }
     },
 
+    async getPostsLikedByUser(req, res) {
+        try {
+            const { page = 1, limit = 10 } = req.query;
+            const posts = await Post.find({
+                likes: { $elemMatch: { $eq: req.params._id } },
+            }).populate({
+                path: "userId",
+                select: "username firstName lastName user_img -_id",
+            });
+            res.send({ message: "Posts obtained", posts });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting posts created by user",
+                error,
+            });
+        }
+    },
+
     async getAllPosts(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;

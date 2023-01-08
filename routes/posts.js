@@ -11,6 +11,7 @@ const { uploadPostImages } = require("../middlewares/upload");
 
 router.get("/getPosts", authentication, PostController.getPosts);
 router.get("/getPostsCreatedByUser/:_id", PostController.getPostsCreatedByUser);
+router.get("/getPostsLikedByUser/:_id", PostController.getPostsLikedByUser);
 router.get("/getAllPosts", PostController.getAllPosts);
 router.get("/getPostById/:_id", PostController.getPostById);
 router.get("/getPostsByTitle/:title", PostController.getPostsByTitle);
