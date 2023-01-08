@@ -145,7 +145,7 @@ const UserController = {
             });
         }
     },
-    async updateLoggedUser(req, res) {
+    async updateLoggedUser(req, res, next) {
         try {
             const old_user = await User.findById(req.user._id);
             if (!old_user) {
@@ -159,20 +159,26 @@ const UserController = {
                 {
                     new: true,
                 }
-            );
-            if (old_user.user_img && user.user_img !== old_user.user_img) {
-                const dir = path.resolve("./");
+            )
+                .populate("followers")
+                .populate("postIds")
+                .populate("following");
+            if (
+                old_user.user_img &&
+                user.user_img !== old_user.user_img &&
+                !/default\/.*/gm.test(old_user.user_img)
+            ) {
+                const dir = path.resolve("./images");
                 await unlink(path.join(dir, old_user.user_img));
             }
             res.status(201).send({ message: "User updated", user });
         } catch (error) {
-            const dir = path.resolve("./");
-            await unlink(path.join(dir, req.body.user_img));
+            if (req.body.user_img) {
+                const dir = path.resolve("./images");
+                await unlink(path.join(dir, req.body.user_img));
+            }
             console.error(error);
-            res.status(500).send({
-                message: "There was a problem updating the user",
-                error,
-            });
+            next(error);
         }
     },
     async getUserById(req, res) {
@@ -200,6 +206,7 @@ const UserController = {
             const username = new RegExp(req.params.username, "i");
             const user = await User.findOne({ username })
                 .populate("followers")
+                .populate("postIds")
                 .populate("following");
             res.send({
                 message: `User with @${req.params.username} username'`,
@@ -213,6 +220,7 @@ const UserController = {
             });
         }
     },
+
     async getAllUsers(req, res) {
         try {
             const users = await User.find();

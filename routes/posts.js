@@ -10,6 +10,7 @@ const { check } = require("express-validator");
 const { uploadPostImages } = require("../middlewares/upload");
 
 router.get("/getPosts", authentication, PostController.getPosts);
+router.get("/getPostsCreatedByUser/:_id", PostController.getPostsCreatedByUser);
 router.get("/getAllPosts", PostController.getAllPosts);
 router.get("/getPostById/:_id", PostController.getPostById);
 router.get("/getPostsByTitle/:title", PostController.getPostsByTitle);

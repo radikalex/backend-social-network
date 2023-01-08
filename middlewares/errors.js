@@ -13,6 +13,7 @@ const handleValidationError = (err, res) => {
 };
 
 const typeError = (err, req, res, next) => {
+    console.log(err);
     if (err.name === "ValidationError")
         return (err = handleValidationError(err, res));
     else if (err.code === 11000) {

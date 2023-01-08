@@ -32,6 +32,11 @@ router.put(
     "/updateLoggedUser",
     authentication,
     uploadUserImages.single("user_img"),
+    [
+        check("firstName", "The first name cant be empty").notEmpty(),
+        check("username", "The username cant be empty").notEmpty(),
+        validateBodyParams,
+    ],
     UserController.updateLoggedUser
 );
 router.put("/follow/:_id", authentication, UserController.follow);

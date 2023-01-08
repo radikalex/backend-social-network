@@ -31,6 +31,33 @@ const PostController = {
             });
         }
     },
+
+    async getPostsCreatedByUser(req, res) {
+        try {
+            const { page = 1, limit = 10 } = req.query;
+            const posts = await Post.find({
+                date: {
+                    $lt: req.query.date,
+                },
+                userId: req.params._id,
+            })
+                .limit(limit)
+                .skip((page - 1) * limit)
+                .sort({ date: -1 })
+                .populate({
+                    path: "userId",
+                    select: "username firstName lastName user_img -_id",
+                });
+            res.send({ message: "Posts obtained", posts });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting posts created by user",
+                error,
+            });
+        }
+    },
+
     async getAllPosts(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;
@@ -55,6 +82,7 @@ const PostController = {
             });
         }
     },
+
     async createPost(req, res) {
         try {
             const post = await Post.create({

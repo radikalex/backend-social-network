@@ -46,7 +46,7 @@ const users = [
         username: "voltron",
         email: "ivan@gmail.com",
         password: bcrypt.hashSync("123456", 10),
-        user_img: "users_images/default/seeder2.png",
+        user_img: "users_images/default/seeder2.jpg",
         darkMode: false,
         bio: "",
         role: "user",
