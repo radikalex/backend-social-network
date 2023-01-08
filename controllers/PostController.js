@@ -77,6 +77,31 @@ const PostController = {
         }
     },
 
+    async getPostsQuery(req, res) {
+        try {
+            const { page = 1, limit = 20 } = req.query;
+            const posts = await Post.find({
+                content: { $regex: req.query.search, $options: "i" },
+                date: {
+                    $lt: req.query.date,
+                },
+            })
+                .limit(limit)
+                .sort({ date: -1 })
+                .populate({
+                    path: "userId",
+                    select: "username firstName lastName user_img -_id",
+                });
+            res.send({ message: "Posts obtained", posts });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting posts created by user",
+                error,
+            });
+        }
+    },
+
     async getAllPosts(req, res) {
         try {
             const { page = 1, limit = 10 } = req.query;

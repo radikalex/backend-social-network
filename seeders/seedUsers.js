@@ -3,23 +3,6 @@ const bcrypt = require("bcryptjs");
 
 const users = [
     {
-        _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617aa"),
-        firstName: "admin",
-        lastName: "",
-        username: "admin",
-        email: "admin@gmail.com",
-        password: bcrypt.hashSync("admin", 10),
-        user_img: "",
-        darkMode: true,
-        bio: "",
-        role: "admin",
-        followers: [],
-        following: [],
-        confirmed: true,
-        tokens: [],
-        postIds: [],
-    },
-    {
         _id: mongoose.Types.ObjectId("569ed8269353e9f4c51617ab"),
         firstName: "Alex",
         lastName: "Jimenez",

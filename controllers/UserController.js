@@ -128,6 +128,7 @@ const UserController = {
             });
         }
     },
+
     async getLoggeduser(req, res) {
         try {
             const user = await User.findById(req.user._id)
@@ -145,6 +146,7 @@ const UserController = {
             });
         }
     },
+
     async updateLoggedUser(req, res, next) {
         try {
             const old_user = await User.findById(req.user._id);
@@ -198,6 +200,7 @@ const UserController = {
             });
         }
     },
+
     async getUserByUsername(req, res) {
         try {
             if (req.params.username.length > 20) {
@@ -211,6 +214,30 @@ const UserController = {
             res.send({
                 message: `User with @${req.params.username} username'`,
                 user,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: `There was a problem getting the user with '${req.params.username}' in their username`,
+                error,
+            });
+        }
+    },
+
+    async getUsersQuery(req, res) {
+        try {
+            const users = await User.find({
+                $or: [
+                    { username: { $regex: req.query.search, $options: "i" } },
+                    { firstName: { $regex: req.query.search, $options: "i" } },
+                    { lastName: { $regex: req.query.search, $options: "i" } },
+                ],
+            })
+                .populate("followers")
+                .populate("following");
+            res.send({
+                message: `Users found with query'`,
+                users,
             });
         } catch (error) {
             console.error(error);

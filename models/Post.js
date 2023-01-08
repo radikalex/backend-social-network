@@ -3,7 +3,7 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema(
     {
-        content: String,
+        content: { type: String, index: true },
         date: Date,
         dateCreated: Date,
         userId: {
