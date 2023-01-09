@@ -21,7 +21,7 @@ const UserController = {
                 });
             }
             req.body.confirmed = true;
-            req.body.user_img = "";
+            req.body.user_img = "users_images/default/user-icon.png";
             req.body.darkMode = false;
             req.body.bio = "";
             req.body.role = "user";
